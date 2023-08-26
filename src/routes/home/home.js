@@ -1,11 +1,14 @@
 import React from "react";
+import SignIn from "../../components/sign-in/sign-in";
+import SignUpForm from "../../components/sign-up-form/sign-up-form";
 
-function Home() {
+function SignPage() {
   return (
     <div>
-      <div>Home</div>
+      <SignIn />
+      <SignUpForm />
     </div>
   );
 }
 
-export default Home;
+export default SignPage;

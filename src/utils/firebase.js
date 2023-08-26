@@ -2,7 +2,11 @@ import {
   getAuth,
   signInWithPopup,
   signInWithRedirect,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
   GoogleAuthProvider,
+  signOut,
 } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
@@ -28,9 +32,9 @@ export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
 export const signInWithGoogleRedirect = () =>
   signInWithRedirect(auth, provider);
 
-export const createUserDocFromAuth = async (userAuth) => {
+export const createUserDocFromAuth = async (userAuth, additionalInfo = {}) => {
+  if (!userAuth) return;
   const userDocRef = doc(db, "users", userAuth.uid);
-
   const userSnaphot = await getDoc(userDocRef);
 
   if (!userSnaphot.exists()) {
@@ -42,9 +46,27 @@ export const createUserDocFromAuth = async (userAuth) => {
         displayName,
         email,
         createdAt,
+        ...additionalInfo,
       });
     } catch (error) {
       console.log("Error during creating the user", error.message);
     }
   }
+};
+
+export const createNewUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+  return createUserWithEmailAndPassword(auth, email, password);
+};
+
+export const signInUserWithEmailAndPassword = async (email, password) => {
+  if (!email || !password) return;
+  return signInWithEmailAndPassword(auth, email, password);
+};
+
+export const onAuthStateChangedListener = async (callback) =>
+  onAuthStateChanged(auth, callback);
+
+export const signOutUser = async () => {
+  await signOut(auth);
 };
